@@ -1,0 +1,13 @@
+# Dependencias (se reconstruyen con pnpm install)
+node_modules/
+# Archivos compilados
+dist/
+.angular/
+coverage/
+# Variables de entorno con contraseñas locales
+.env
+# Registros y archivos del sistema
+*.log
+
+.DS_Store
+Thumbs.db
