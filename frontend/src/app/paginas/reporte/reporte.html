@@ -1,0 +1,45 @@
+<div class="pagina-encabezado">
+    <div>
+      <h1>Reporte de operaciones</h1>
+      <p class="descripcion">Totales por tipo de operación en un periodo.</p>
+    </div>
+  </div>
+  
+  <form class="filtros" (submit)="$event.preventDefault(); generar(desde.value, hasta.value)">
+    <div class="campo">
+      <label for="desde">Desde</label>
+      <input id="desde" type="date" #desde />
+    </div>
+    <div class="campo">
+      <label for="hasta">Hasta</label>
+      <input id="hasta" type="date" #hasta />
+    </div>
+    <button class="boton" type="submit">Generar</button>
+  </form>
+  
+  @if (error()) { <p class="alerta error">{{ error() }}</p> }
+  
+  @if (reporte(); as r) {
+    <p class="suave">
+      Periodo: {{ r.periodo.desde ? fecha(r.periodo.desde) : 'desde el inicio' }}
+      — {{ r.periodo.hasta ? fecha(r.periodo.hasta) : 'hasta hoy' }}
+    </p>
+    <section class="panel">
+      <div class="tabla-contenedor">
+        <table>
+          <thead><tr><th>Operación</th><th class="num">Cantidad</th><th class="num">Monto total</th></tr></thead>
+          <tbody>
+            <tr><td>Depósitos</td><td class="num">{{ r.depositos.cantidad }}</td><td class="num">{{ moneda(r.depositos.monto) }}</td></tr>
+            <tr><td>Retiros</td><td class="num">{{ r.retiros.cantidad }}</td><td class="num">{{ moneda(r.retiros.monto) }}</td></tr>
+            <tr><td>Transferencias</td><td class="num">{{ r.transferencias.cantidad }}</td><td class="num">{{ moneda(r.transferencias.monto) }}</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+    <div class="rejilla">
+      <div class="panel dato"><span class="etiqueta">Cuentas activas / inactivas</span><span class="valor">{{ r.cuentas.activas }} / {{ r.cuentas.inactivas }}</span></div>
+      <div class="panel dato"><span class="etiqueta">Saldo total</span><span class="valor">{{ moneda(r.cuentas.saldoTotal) }}</span></div>
+      <div class="panel dato"><span class="etiqueta">Clientes activos / inactivos</span><span class="valor">{{ r.clientes.activos }} / {{ r.clientes.inactivos }}</span></div>
+    </div>
+  }
+  
