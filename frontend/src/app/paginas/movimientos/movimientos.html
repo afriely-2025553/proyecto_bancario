@@ -1,0 +1,76 @@
+<div class="pagina-encabezado">
+    <div>
+      <h1>Movimientos</h1>
+      <p class="descripcion">Historial de operaciones por cuenta, tipo y fechas.</p>
+    </div>
+  </div>
+  
+  <form class="filtros" (submit)="$event.preventDefault(); filtrar(cuenta.value, tipo.value, desde.value, hasta.value)">
+    <div class="campo ancho">
+      <label for="cuenta">Cuenta</label>
+      <select id="cuenta" #cuenta>
+        <option value="0">Todas</option>
+        @for (c of cuentas(); track c.id) {
+          <option [value]="c.id">{{ c.numeroCuenta }} · {{ c.clienteNombre }}</option>
+        }
+      </select>
+    </div>
+    <div class="campo">
+      <label for="tipo">Tipo</label>
+      <select id="tipo" #tipo>
+        <option value="">Todos</option>
+        <option value="deposito">Depósito</option>
+        <option value="retiro">Retiro</option>
+        <option value="transferencia_salida">Transferencia enviada</option>
+        <option value="transferencia_entrada">Transferencia recibida</option>
+      </select>
+    </div>
+    <div class="campo">
+      <label for="desde">Desde</label>
+      <input id="desde" type="date" #desde />
+    </div>
+    <div class="campo">
+      <label for="hasta">Hasta</label>
+      <input id="hasta" type="date" #hasta />
+    </div>
+    <button class="boton secundario" type="submit">Filtrar</button>
+  </form>
+  
+  <section class="panel">
+    @if (cargando()) {
+      <p class="vacio">Cargando movimientos…</p>
+    } @else if (error()) {
+      <div class="vacio">
+        <p>{{ error() }}</p>
+        <button type="button" class="boton secundario pequeno" (click)="cargar()">Reintentar</button>
+      </div>
+    } @else {
+      <div class="tabla-contenedor">
+        <table>
+          <thead>
+            <tr><th>Fecha</th><th>Cuenta</th><th>Tipo</th><th>Detalle</th><th class="num">Monto</th><th class="num">Saldo</th></tr>
+          </thead>
+          <tbody>
+            @for (m of movimientos(); track m.id) {
+              <tr>
+                <td class="num">{{ fechaHora(m.fecha) }}</td>
+                <td>{{ m.numeroCuenta }}</td>
+                <td>{{ nombre[m.tipo] }}</td>
+                <td>
+                  {{ m.descripcion }}
+                  @if (m.cuentaContraparte) { <span class="suave">· cuenta {{ m.cuentaContraparte }}</span> }
+                </td>
+                <td class="num" [class.positivo]="suma(m)" [class.negativo]="!suma(m)">
+                  {{ suma(m) ? '+' : '−' }} {{ moneda(m.monto) }}
+                </td>
+                <td class="num">{{ moneda(m.saldoPosterior) }}</td>
+              </tr>
+            } @empty {
+              <tr><td colspan="6" class="vacio">No hay movimientos con esos filtros.</td></tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </section>
+  
