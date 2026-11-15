@@ -1,0 +1,37 @@
+<main class="acceso">
+    <div class="acceso-caja">
+      <div class="acceso-marca">
+        <strong>Banco de aula</strong>
+        <span class="suave">Datos ficticios</span>
+      </div>
+      <section class="panel">
+        <form class="panel-cuerpo formulario" [formGroup]="formulario" (ngSubmit)="entrar()" novalidate>
+          <div>
+            <h1>Iniciar sesión</h1>
+            <p class="suave">Ingrese con su usuario de operador.</p>
+          </div>
+          @if (sesionExpirada && !error()) {
+            <p class="alerta">Su sesión expiró. Vuelva a iniciar sesión.</p>
+          }
+          @if (error()) {
+            <p class="alerta error" role="alert">{{ error() }}</p>
+          }
+          <div class="campo">
+            <label for="usuario">Usuario</label>
+            <input id="usuario" formControlName="nombreUsuario" autocomplete="username" [attr.aria-invalid]="invalido('nombreUsuario')" />
+            @if (invalido('nombreUsuario')) { <span class="error-campo">Escriba su usuario.</span> }
+          </div>
+          <div class="campo">
+            <label for="contrasena">Contraseña</label>
+            <input id="contrasena" type="password" formControlName="contrasena" autocomplete="current-password" [attr.aria-invalid]="invalido('contrasena')" />
+            @if (invalido('contrasena')) { <span class="error-campo">Escriba su contraseña.</span> }
+          </div>
+          <button class="boton" type="submit" [disabled]="enviando()">
+            {{ enviando() ? 'Ingresando…' : 'Ingresar' }}
+          </button>
+          
+        </form>
+      </section>
+    </div>
+  </main>
+  
