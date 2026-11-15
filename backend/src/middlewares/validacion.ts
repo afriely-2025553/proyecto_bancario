@@ -85,6 +85,13 @@ export const esquemaEstadoCuenta = z.object({
     cuentaId: z.number({ error: 'La cuenta es obligatoria.' }).int().positive('La cuenta es obligatoria.'),
     monto: z.unknown(),
     descripcion: descripcionOpcional,
+  });
+  
+  export const esquemaTransferencia = z.object({
+    cuentaOrigenId: z.number({ error: 'La cuenta origen es obligatoria.' }).int().positive('La cuenta origen es obligatoria.'),
+    cuentaDestinoId: z.number({ error: 'La cuenta destino es obligatoria.' }).int().positive('La cuenta destino es obligatoria.'),
+    monto: z.unknown(),
+    concepto: z.string().trim().max(255, 'El concepto admite como máximo 255 caracteres.').nullish(),
   });  
   
   export const esquemaLogin = z.object({
