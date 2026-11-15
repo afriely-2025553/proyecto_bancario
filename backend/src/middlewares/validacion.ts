@@ -92,7 +92,14 @@ export const esquemaEstadoCuenta = z.object({
     cuentaDestinoId: z.number({ error: 'La cuenta destino es obligatoria.' }).int().positive('La cuenta destino es obligatoria.'),
     monto: z.unknown(),
     concepto: z.string().trim().max(255, 'El concepto admite como máximo 255 caracteres.').nullish(),
-  });  
+  });
+  
+  export const esquemaMovimiento = z.object({
+    cuentaId: z.number({ error: 'La cuenta es obligatoria.' }).int().positive('La cuenta es obligatoria.'),
+    tipo: z.enum(['deposito', 'retiro'], { error: 'El tipo de movimiento debe ser «deposito» o «retiro».' }),
+    monto: z.unknown(),
+    descripcion: z.string().trim().max(255).nullish(),
+  });    
   
   export const esquemaLogin = z.object({
     nombreUsuario: z.string({ error: 'El usuario es obligatorio.' }).trim().min(1, 'El usuario es obligatorio.'),
