@@ -1,0 +1,56 @@
+<div class="pagina-encabezado">
+    <div>
+      <h1>Clientes</h1>
+      <p class="descripcion">Registro, consulta y modificación de clientes.</p>
+    </div>
+    <a class="boton" routerLink="/clientes/nuevo">Registrar cliente</a>
+  </div>
+  
+  <form class="filtros" (submit)="$event.preventDefault(); buscar(texto.value)">
+    <div class="campo ancho">
+      <label for="buscar">Buscar</label>
+      <input id="buscar" #texto placeholder="Nombre, identificación, código o correo" />
+    </div>
+    <button class="boton secundario" type="submit">Buscar</button>
+  </form>
+  
+  @if (mensaje()) {
+    <p class="alerta">{{ mensaje() }}</p>
+  }
+  
+  <section class="panel">
+    <div class="tabla-contenedor">
+      <table>
+        <thead>
+          <tr><th>Código</th><th>Nombre</th><th>Identificación</th><th>Nacimiento</th><th>Correo</th><th>Estado</th><th></th></tr>
+        </thead>
+        <tbody>
+          @for (cliente of clientes(); track cliente.id) {
+            <tr>
+              <td>{{ cliente.codigo }}</td>
+              <td>{{ cliente.nombres }} {{ cliente.apellidos }}</td>
+              <td>{{ cliente.identificacion }}</td>
+              <td>{{ fecha(cliente.fechaNacimiento) }}</td>
+              <td>{{ cliente.correo }}</td>
+              <td>
+                <span class="estado" [class.activa]="cliente.activo" [class.inactiva]="!cliente.activo">
+                  {{ cliente.activo ? 'Activo' : 'Inactivo' }}
+                </span>
+              </td>
+              <td>
+                <div class="acciones">
+                  <a class="boton secundario pequeno" [routerLink]="['/clientes', cliente.id]">Editar</a>
+                  @if (cliente.activo) {
+                    <button type="button" class="boton secundario pequeno" (click)="desactivar(cliente)">Desactivar</button>
+                  }
+                </div>
+              </td>
+            </tr>
+          } @empty {
+            <tr><td colspan="7" class="vacio">No se encontraron clientes.</td></tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+  
