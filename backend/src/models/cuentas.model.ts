@@ -86,6 +86,10 @@ export async function insertarCuenta(clienteId: number, tipoCuentaId: number): P
   return resultado.insertId;
 }
 
+export async function actualizarEstadoCuenta(id: number, estado: 'activa' | 'inactiva'): Promise<void> {
+    await ejecutar('UPDATE cuenta SET estado = ? WHERE id = ?', [estado, id]);
+  }
+
 export async function listarTiposCuenta() {
   const filas = await consultar<RowDataPacket>('SELECT id, nombre, descripcion, activo FROM tipo_cuenta ORDER BY id');
   return filas.map((f) => ({ id: f.id, nombre: f.nombre, descripcion: f.descripcion, activo: bandera(f.activo) }));
