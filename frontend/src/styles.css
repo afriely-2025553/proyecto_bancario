@@ -42,8 +42,8 @@
     position: sticky; top: 0; height: 100vh;
   }
   .marca { display: flex; align-items: center; gap: 10px; padding: 0 6px; color: #fff; text-decoration: none; }
-  .marca strong { font-size: 1.02rem; }
-  .marca small { color: #a9b6c6; font-size: 0.8rem; }
+  .marca-texto { display: flex; flex-direction: column; line-height: 1.25; }
+  .marca strong { font-size: 1.02rem; }  .marca small { color: #a9b6c6; font-size: 0.8rem; }
   .barra nav { display: grid; gap: 2px; }
   .barra nav a { color: #cdd6e1; text-decoration: none; padding: 9px 12px; border-radius: 6px; }
   .barra nav a:hover { background: rgba(255, 255, 255, 0.06); color: #fff; }
