@@ -1,0 +1,53 @@
+<div class="pagina-encabezado">
+    <div>
+      <h1>Operaciones</h1>
+      <p class="descripcion">Depósitos, retiros y transferencias.</p>
+    </div>
+  </div>
+  
+  <section class="panel">
+    <form class="panel-cuerpo formulario" [formGroup]="formulario" (ngSubmit)="enviar()">
+      @if (mensaje()) { <p class="alerta ok">{{ mensaje() }}</p> }
+      @if (error()) { <p class="alerta error">{{ error() }}</p> }
+      <div class="campo">
+        <label for="tipo">Tipo de operación</label>
+        <select id="tipo" formControlName="tipo">
+          <option value="deposito">Depósito</option>
+          <option value="retiro">Retiro</option>
+          <option value="transferencia">Transferencia</option>
+        </select>
+      </div>
+      <div class="campo">
+        <label for="cuenta">Cuenta</label>
+        <select id="cuenta" formControlName="cuentaId">
+          <option [ngValue]="0" disabled>Seleccione una cuenta</option>
+          @for (cuenta of cuentas(); track cuenta.id) {
+            <option [ngValue]="cuenta.id">{{ cuenta.numeroCuenta }} · {{ cuenta.clienteNombre }}</option>
+          }
+        </select>
+      </div>
+      @if (formulario.controls.tipo.value === 'transferencia') {
+        <div class="campo">
+          <label for="destino">Cuenta destino</label>
+          <select id="destino" formControlName="destinoId">
+            <option [ngValue]="0" disabled>Seleccione una cuenta</option>
+            @for (cuenta of cuentas(); track cuenta.id) {
+              <option [ngValue]="cuenta.id">{{ cuenta.numeroCuenta }} · {{ cuenta.clienteNombre }}</option>
+            }
+          </select>
+        </div>
+      }
+      <div class="campo">
+        <label for="monto">Monto (Q)</label>
+        <input id="monto" formControlName="monto" inputmode="decimal" />
+      </div>
+      <div class="campo">
+        <label for="descripcion">Descripción</label>
+        <input id="descripcion" formControlName="descripcion" />
+      </div>
+      <div class="acciones">
+        <button class="boton" type="submit">Registrar</button>
+      </div>
+    </form>
+  </section>
+  
