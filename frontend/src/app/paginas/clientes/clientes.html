@@ -1,24 +1,40 @@
 <div class="pagina-encabezado">
-    <div>
-      <h1>Clientes</h1>
-      <p class="descripcion">Registro, consulta y modificación de clientes.</p>
-    </div>
-    <a class="boton" routerLink="/clientes/nuevo">Registrar cliente</a>
+  <div>
+    <h1>Clientes</h1>
+    <p class="descripcion">Registro, consulta y modificación de clientes.</p>
   </div>
-  
-  <form class="filtros" (submit)="$event.preventDefault(); buscar(texto.value)">
-    <div class="campo ancho">
-      <label for="buscar">Buscar</label>
-      <input id="buscar" #texto placeholder="Nombre, identificación, código o correo" />
+  <a class="boton" routerLink="/clientes/nuevo">Registrar cliente</a>
+</div>
+
+<form class="filtros" (submit)="$event.preventDefault(); buscar(texto.value, estado.value)">
+  <div class="campo ancho">
+    <label for="buscar">Buscar</label>
+    <input id="buscar" #texto placeholder="Nombre, identificación, código o correo" />
+  </div>
+  <div class="campo">
+    <label for="estado">Estado</label>
+    <select id="estado" #estado (change)="buscar(texto.value, estado.value)">
+      <option value="">Todos</option>
+      <option value="activos">Activos</option>
+      <option value="inactivos">Inactivos</option>
+    </select>
+  </div>
+  <button class="boton secundario" type="submit">Buscar</button>
+</form>
+
+@if (mensaje()) {
+  <p class="alerta">{{ mensaje() }}</p>
+}
+
+<section class="panel">
+  @if (cargando()) {
+    <p class="vacio">Cargando clientes…</p>
+  } @else if (error()) {
+    <div class="vacio">
+      <p>{{ error() }}</p>
+      <button type="button" class="boton secundario pequeno" (click)="cargar()">Reintentar</button>
     </div>
-    <button class="boton secundario" type="submit">Buscar</button>
-  </form>
-  
-  @if (mensaje()) {
-    <p class="alerta">{{ mensaje() }}</p>
-  }
-  
-  <section class="panel">
+  } @else {
     <div class="tabla-contenedor">
       <table>
         <thead>
@@ -47,10 +63,10 @@
               </td>
             </tr>
           } @empty {
-            <tr><td colspan="7" class="vacio">No se encontraron clientes.</td></tr>
+            <tr><td colspan="7" class="vacio">No se encontraron clientes con ese criterio.</td></tr>
           }
         </tbody>
       </table>
     </div>
-  </section>
-  
+  }
+</section>

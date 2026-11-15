@@ -12,21 +12,36 @@ import { Cliente } from '../../core/modelos';
 export class Clientes {
   private readonly api = inject(Api);
   readonly clientes = signal<Cliente[]>([]);
+  readonly cargando = signal(true);
+  readonly error = signal('');
   readonly mensaje = signal('');
   readonly fecha = fecha;
   private texto = '';
+  private estado = '';
 
   constructor() {
     this.cargar();
   }
 
-  buscar(texto: string): void {
+  buscar(texto: string, estado: string): void {
     this.texto = texto.trim();
+    this.estado = estado;
     this.cargar();
   }
 
   cargar(): void {
-    this.api.clientes(this.texto).subscribe((lista) => this.clientes.set(lista));
+    this.cargando.set(true);
+    this.error.set('');
+    this.api.clientes(this.texto, this.estado).subscribe({
+      next: (lista) => {
+        this.clientes.set(lista);
+        this.cargando.set(false);
+      },
+      error: (error: unknown) => {
+        this.error.set(mensajeError(error));
+        this.cargando.set(false);
+      },
+    });
   }
 
   desactivar(cliente: Cliente): void {
