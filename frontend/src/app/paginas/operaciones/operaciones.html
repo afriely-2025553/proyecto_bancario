@@ -1,53 +1,110 @@
 <div class="pagina-encabezado">
     <div>
       <h1>Operaciones</h1>
-      <p class="descripcion">Depósitos, retiros y transferencias.</p>
+      <p class="descripcion">Depósitos, retiros y transferencias entre cuentas activas.</p>
     </div>
   </div>
   
-  <section class="panel">
-    <form class="panel-cuerpo formulario" [formGroup]="formulario" (ngSubmit)="enviar()">
-      @if (mensaje()) { <p class="alerta ok">{{ mensaje() }}</p> }
-      @if (error()) { <p class="alerta error">{{ error() }}</p> }
-      <div class="campo">
-        <label for="tipo">Tipo de operación</label>
-        <select id="tipo" formControlName="tipo">
-          <option value="deposito">Depósito</option>
-          <option value="retiro">Retiro</option>
-          <option value="transferencia">Transferencia</option>
-        </select>
-      </div>
-      <div class="campo">
-        <label for="cuenta">Cuenta</label>
-        <select id="cuenta" formControlName="cuentaId">
-          <option [ngValue]="0" disabled>Seleccione una cuenta</option>
-          @for (cuenta of cuentas(); track cuenta.id) {
-            <option [ngValue]="cuenta.id">{{ cuenta.numeroCuenta }} · {{ cuenta.clienteNombre }}</option>
-          }
-        </select>
-      </div>
-      @if (formulario.controls.tipo.value === 'transferencia') {
+  @if (paso() === 'datos') {
+    <section class="panel">
+      <form class="panel-cuerpo formulario" [formGroup]="formulario" (ngSubmit)="continuar()" novalidate>
+        @if (error()) { <p class="alerta error" role="alert">{{ error() }}</p> }
         <div class="campo">
-          <label for="destino">Cuenta destino</label>
-          <select id="destino" formControlName="destinoId">
+          <label for="tipo">Tipo de operación</label>
+          <select id="tipo" formControlName="tipo">
+            <option value="deposito">Depósito</option>
+            <option value="retiro">Retiro</option>
+            <option value="transferencia">Transferencia</option>
+          </select>
+        </div>
+        <div class="campo">
+          <label for="cuenta">{{ esTransferencia() ? 'Cuenta origen' : 'Cuenta' }}</label>
+          <select id="cuenta" formControlName="cuentaId" [attr.aria-invalid]="intento() && !!errorCuenta()">
             <option [ngValue]="0" disabled>Seleccione una cuenta</option>
             @for (cuenta of cuentas(); track cuenta.id) {
               <option [ngValue]="cuenta.id">{{ cuenta.numeroCuenta }} · {{ cuenta.clienteNombre }}</option>
             }
           </select>
+          @if (origen(); as cuenta) {
+            <span class="ayuda">{{ cuenta.tipoCuenta }} · saldo disponible <strong>{{ moneda(cuenta.saldo) }}</strong></span>
+          }
         </div>
-      }
-      <div class="campo">
-        <label for="monto">Monto (Q)</label>
-        <input id="monto" formControlName="monto" inputmode="decimal" />
+        @if (esTransferencia()) {
+          <div class="campo">
+            <label for="destino">Cuenta destino</label>
+            <select id="destino" formControlName="destinoId" [attr.aria-invalid]="intento() && !!errorCuenta()">
+              <option [ngValue]="0" disabled>Seleccione una cuenta</option>
+              @for (cuenta of destinos(); track cuenta.id) {
+                <option [ngValue]="cuenta.id">{{ cuenta.numeroCuenta }} · {{ cuenta.clienteNombre }}</option>
+              }
+            </select>
+          </div>
+        }
+        @if (intento() && errorCuenta()) { <span class="error-campo">{{ errorCuenta() }}</span> }
+        <div class="campo">
+          <label for="monto">Monto (Q)</label>
+          <input id="monto" formControlName="monto" inputmode="decimal" placeholder="0.00"
+                 [attr.aria-invalid]="intento() && !!errorMonto()" />
+          @if ((intento() || formulario.controls.monto.dirty) && errorMonto()) {
+            <span class="error-campo">{{ errorMonto() }}</span>
+          } @else if (saldoNuevo() !== null) {
+            <span class="ayuda">Saldo después de la operación: {{ moneda(saldoNuevo()!) }}</span>
+          }
+        </div>
+        <div class="campo">
+          <label for="descripcion">{{ esTransferencia() ? 'Concepto' : 'Descripción' }} (opcional)</label>
+          <input id="descripcion" formControlName="descripcion" maxlength="255" />
+        </div>
+        <div class="acciones">
+          <button class="boton" type="submit">Continuar</button>
+        </div>
+      </form>
+    </section>
+  }
+  
+  @if (paso() === 'confirmar') {
+    <section class="panel">
+      <div class="panel-cabecera"><h2>Revise los datos antes de confirmar</h2></div>
+      <div class="panel-cuerpo">
+        <dl class="lista-datos">
+          <dt>Operación</dt><dd>{{ nombre[formulario.controls.tipo.value] }}</dd>
+          <dt>{{ esTransferencia() ? 'Cuenta origen' : 'Cuenta' }}</dt>
+          <dd>{{ origen()?.numeroCuenta }} · {{ origen()?.clienteNombre }}</dd>
+          @if (esTransferencia()) {
+            <dt>Cuenta destino</dt><dd>{{ destino()?.numeroCuenta }} · {{ destino()?.clienteNombre }}</dd>
+          }
+          <dt>Monto</dt><dd><strong>{{ moneda(+formulario.controls.monto.value) }}</strong></dd>
+          <dt>Saldo actual</dt><dd>{{ moneda(origen()?.saldo ?? 0) }}</dd>
+          <dt>Saldo después</dt><dd>{{ moneda(saldoNuevo() ?? 0) }}</dd>
+        </dl>
+        <div class="acciones">
+          <button class="boton" type="button" (click)="confirmar()" [disabled]="enviando()">
+            {{ enviando() ? 'Registrando…' : 'Confirmar' }}
+          </button>
+          <button class="boton secundario" type="button" (click)="volver()" [disabled]="enviando()">Volver</button>
+        </div>
       </div>
-      <div class="campo">
-        <label for="descripcion">Descripción</label>
-        <input id="descripcion" formControlName="descripcion" />
+    </section>
+  }
+  
+  @if (paso() === 'listo' && comprobante(); as c) {
+    <section class="panel">
+      <div class="panel-cabecera"><h2>Comprobante</h2></div>
+      <div class="panel-cuerpo">
+        <p class="alerta ok">Operación registrada correctamente.</p>
+        <dl class="lista-datos">
+          @if (c.referencia) { <dt>Referencia</dt><dd>{{ c.referencia }}</dd> }
+          <dt>Fecha</dt><dd>{{ fechaHora(c.fecha) }}</dd>
+          <dt>Cuenta</dt><dd>{{ c.cuenta }}</dd>
+          @if (c.destino) { <dt>Cuenta destino</dt><dd>{{ c.destino }}</dd> }
+          <dt>Monto</dt><dd>{{ moneda(c.monto) }}</dd>
+          <dt>Saldo anterior</dt><dd>{{ moneda(c.saldoAnterior) }}</dd>
+          <dt>Saldo nuevo</dt><dd><strong>{{ moneda(c.saldoPosterior) }}</strong></dd>
+        </dl>
+        <div class="acciones">
+          <button class="boton" type="button" (click)="nueva()">Nueva operación</button>
+        </div>
       </div>
-      <div class="acciones">
-        <button class="boton" type="submit">Registrar</button>
-      </div>
-    </form>
-  </section>
+    </section>
+  }
   
