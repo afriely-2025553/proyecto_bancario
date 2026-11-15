@@ -6,3 +6,7 @@ routerDepositos.post('/', controlador.depositar);
 
 export const routerRetiros = Router();
 routerRetiros.post('/', controlador.retirar);
+
+export const routerTransferencias = Router();
+routerTransferencias.post('/', controlador.crearTransferencia);
+
