@@ -23,9 +23,12 @@ export function moneda(valor: number): string {
 
 /** Fecha sin hora, como la de nacimiento ("1990-04-12"). */
 export function fecha(valor: string | null): string {
-  return valor ? new Date(valor).toLocaleDateString('es-GT') : '—';
+  if (!valor) {
+    return '—';
+  }
+  const [anio, mes, dia] = valor.slice(0, 10).split('-');
+  return `${dia}/${mes}/${anio}`;
 }
-
 /** Fecha y hora de un registro ("2026-11-03 10:00:00"). */
 export function fechaHora(valor: string): string {
   return new Date(valor.replace(' ', 'T')).toLocaleString('es-GT');
