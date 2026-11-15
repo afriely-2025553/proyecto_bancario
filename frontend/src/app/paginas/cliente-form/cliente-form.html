@@ -53,7 +53,7 @@
       </div>
       <div class="acciones">
         <button class="boton" type="submit" [disabled]="guardando()">{{ guardando() ? 'Guardando…' : 'Guardar' }}</button>
-        <a class="boton secundario" routerLink="/clientes">Cancelar</a>
+        <a class="boton secundario" [routerLink]="id ? ['/clientes', id] : ['/clientes']">Cancelar</a>
       </div>
     </form>
   </section>

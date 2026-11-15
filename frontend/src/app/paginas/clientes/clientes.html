@@ -55,7 +55,7 @@
               </td>
               <td>
                 <div class="acciones">
-                  <a class="boton secundario pequeno" [routerLink]="['/clientes', cliente.id]">Editar</a>
+                  <a class="boton secundario pequeno" [routerLink]="['/clientes', cliente.id]">Ver</a>
                   @if (cliente.activo) {
                     <button type="button" class="boton secundario pequeno" (click)="desactivar(cliente)">Desactivar</button>
                   }

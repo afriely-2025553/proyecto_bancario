@@ -78,7 +78,7 @@ export class ClienteForm {
     this.guardando.set(true);
     const peticion = this.id ? this.api.actualizarCliente(this.id, datos) : this.api.crearCliente(datos);
     peticion.subscribe({
-      next: () => void this.router.navigate(['/clientes']),
+      next: (cliente) => void this.router.navigate(['/clientes', cliente.id]),
       error: (error: unknown) => {
         this.guardando.set(false);
         this.error.set(mensajeError(error));
