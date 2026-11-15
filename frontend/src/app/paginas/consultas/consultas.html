@@ -1,42 +1,80 @@
 <div class="pagina-encabezado">
     <div>
       <h1>Consultas</h1>
+      <p class="descripcion">Busque clientes y cuentas desde un solo lugar.</p>
     </div>
   </div>
   
   <form class="filtros" (submit)="$event.preventDefault(); buscar(texto.value)">
     <div class="campo ancho">
       <label for="texto">Buscar</label>
-      <input id="texto" #texto />
+      <input id="texto" #texto placeholder="Nombre, identificación, código, correo o número de cuenta" />
     </div>
     <button class="boton" type="submit">Consultar</button>
   </form>
   
   @if (error()) { <p class="alerta error">{{ error() }}</p> }
   
-  <section class="panel">
-    <div class="panel-cabecera"><h2>Clientes</h2></div>
-    <div class="tabla-contenedor">
-      <table>
-        <tbody>
-          @for (c of resultado()?.clientes; track c.id) {
-            <tr><td>{{ c.codigo }}</td><td>{{ c.nombres }} {{ c.apellidos }}</td></tr>
-          }
-        </tbody>
-      </table>
-    </div>
-  </section>
+  @if (resultado(); as r) {
+    @if (!r.clientes.length && !r.cuentas.length) {
+      <section class="panel">
+        <p class="vacio">No se encontraron clientes ni cuentas para «{{ r.criterio }}». Revise la ortografía o busque por otro dato.</p>
+      </section>
+    } @else {
+      <section class="panel">
+        <div class="panel-cabecera"><h2>Clientes ({{ r.clientes.length }})</h2></div>
+        @if (r.clientes.length) {
+          <div class="tabla-contenedor">
+            <table>
+              <thead><tr><th>Código</th><th>Nombre</th><th>Identificación</th><th>Estado</th><th></th></tr></thead>
+              <tbody>
+                @for (c of r.clientes; track c.id) {
+                  <tr>
+                    <td>{{ c.codigo }}</td>
+                    <td>{{ c.nombres }} {{ c.apellidos }}</td>
+                    <td>{{ c.identificacion }}</td>
+                    <td><span class="estado" [class.activa]="c.activo" [class.inactiva]="!c.activo">{{ c.activo ? 'Activo' : 'Inactivo' }}</span></td>
+                    <td><a [routerLink]="['/clientes', c.id]">Ver</a></td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        } @else {
+          <p class="vacio">Ningún cliente coincide.</p>
+        }
+      </section>
   
-  <section class="panel">
-    <div class="panel-cabecera"><h2>Cuentas</h2></div>
-    <div class="tabla-contenedor">
-      <table>
-        <tbody>
-          @for (c of resultado()?.cuentas; track c.id) {
-            <tr><td>{{ c.numeroCuenta }}</td><td>{{ c.clienteNombre }}</td></tr>
-          }
-        </tbody>
-      </table>
-    </div>
-  </section>
+      <section class="panel">
+        <div class="panel-cabecera"><h2>Cuentas ({{ r.cuentas.length }})</h2></div>
+        @if (r.cuentas.length) {
+          <div class="tabla-contenedor">
+            <table>
+              <thead><tr><th>Número</th><th>Titular</th><th>Tipo</th><th class="num">Saldo</th><th>Estado</th></tr></thead>
+              <tbody>
+                @for (c of r.cuentas; track c.id) {
+                  <tr>
+                    <td>{{ c.numeroCuenta }}</td>
+                    <td>{{ c.clienteNombre }}</td>
+                    <td>{{ c.tipoCuenta }}</td>
+                    <td class="num">{{ moneda(c.saldo) }}</td>
+                    <td><span class="estado" [class]="c.estado">{{ c.estado === 'activa' ? 'Activa' : 'Inactiva' }}</span></td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        } @else {
+          <p class="vacio">Ninguna cuenta coincide.</p>
+        }
+      </section>
+    }
+  } @else if (!error()) {
+    <section class="panel">
+      <div class="vacio">
+        <p>Escriba un dato y presione <strong>Consultar</strong>. Por ejemplo:</p>
+        <p><code>lopez</code> · <code>2501000020101</code> · <code>CLI-0003</code> · <code>100-00000001</code></p>
+      </div>
+    </section>
+  }
   

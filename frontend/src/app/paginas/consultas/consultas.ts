@@ -1,10 +1,12 @@
 import { Component, inject, signal } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { Api } from '../../core/api';
 import { mensajeError, moneda } from '../../core/formato';
 import { Consulta } from '../../core/modelos';
 
 @Component({
   selector: 'app-consultas',
+  imports: [RouterLink],
   templateUrl: './consultas.html',
 })
 export class Consultas {
