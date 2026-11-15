@@ -11,8 +11,7 @@
       <div class="sesion">
         <span class="sesion-nombre">{{ auth.usuario()?.nombreCompleto }}</span>
         <span class="sesion-rol">{{ auth.usuario()?.rol === 'administrador' ? 'Administrador' : 'Cajero' }}</span>
-        <button type="button" class="boton secundario pequeno" (click)="salir()">Cerrar sesión</button>
-      </div>
+        <button type="button" class="boton en-barra pequeno" (click)="salir()">Cerrar sesión</button>      </div>
     </aside>
     <main class="contenido">
       <router-outlet />

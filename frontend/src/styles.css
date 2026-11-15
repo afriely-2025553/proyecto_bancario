@@ -52,6 +52,8 @@
   .sesion-nombre { color: #fff; font-weight: 600; }
   .sesion-rol { color: #a9b6c6; font-size: 0.85rem; }
   .sesion .boton { margin-top: 10px; }
+  .boton.en-barra { background: transparent; color: #dfe6ef; border-color: rgba(255, 255, 255, 0.3); }
+  .boton.en-barra:hover { background: rgba(255, 255, 255, 0.08); color: #fff; }
   .contenido { padding: 28px 36px 56px; min-width: 0; max-width: 1200px; width: 100%; }
   
   /* Encabezado de cada página */
