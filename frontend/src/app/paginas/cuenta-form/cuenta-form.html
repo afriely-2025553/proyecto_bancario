@@ -1,0 +1,41 @@
+<div class="pagina-encabezado">
+    <div>
+      <p class="migas"><a routerLink="/cuentas">Cuentas</a> / Abrir cuenta</p>
+      <h1>Abrir cuenta</h1>
+      <p class="descripcion">La cuenta se abre activa y con saldo Q 0.00.</p>
+    </div>
+  </div>
+  
+  <section class="panel">
+    <form class="panel-cuerpo formulario" [formGroup]="formulario" (ngSubmit)="guardar()" novalidate>
+      @if (error()) {
+        <p class="alerta error" role="alert">{{ error() }}</p>
+      }
+      <div class="campo">
+        <label for="cliente">Cliente titular *</label>
+        <select id="cliente" formControlName="clienteId" [attr.aria-invalid]="invalido('clienteId')">
+          <option [ngValue]="0" disabled>Seleccione un cliente</option>
+          @for (cliente of clientes(); track cliente.id) {
+            <option [ngValue]="cliente.id">{{ cliente.codigo }} · {{ cliente.nombres }} {{ cliente.apellidos }}</option>
+          }
+        </select>
+        @if (invalido('clienteId')) { <span class="error-campo">Seleccione el cliente.</span> }
+        <span class="ayuda">Solo aparecen clientes activos.</span>
+      </div>
+      <div class="campo">
+        <label for="tipo">Tipo de cuenta *</label>
+        <select id="tipo" formControlName="tipoCuentaId" [attr.aria-invalid]="invalido('tipoCuentaId')">
+          <option [ngValue]="0" disabled>Seleccione un tipo</option>
+          @for (tipo of tipos(); track tipo.id) {
+            <option [ngValue]="tipo.id">{{ tipo.nombre }}</option>
+          }
+        </select>
+        @if (invalido('tipoCuentaId')) { <span class="error-campo">Seleccione el tipo de cuenta.</span> }
+      </div>
+      <div class="acciones">
+        <button class="boton" type="submit" [disabled]="guardando()">{{ guardando() ? 'Abriendo…' : 'Abrir cuenta' }}</button>
+        <a class="boton secundario" routerLink="/cuentas">Cancelar</a>
+      </div>
+    </form>
+  </section>
+  
