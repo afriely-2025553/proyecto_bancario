@@ -70,3 +70,12 @@
     </div>
   }
 </section>
+
+@if (pendiente(); as c) {
+  <app-confirmacion titulo="Desactivar cliente" textoConfirmar="Desactivar" [peligro]="true"
+                    [ocupado]="procesando()" (confirmar)="confirmarDesactivar(c)" (cancelar)="cerrarDialogo()">
+    <p>Va a desactivar a <strong>{{ c.nombres }} {{ c.apellidos }}</strong> ({{ c.codigo }}).</p>
+    <p>Mientras esté inactivo, sus cuentas no podrán recibir depósitos, retiros ni transferencias. Puede volver a activarlo desde su ficha.</p>
+  </app-confirmacion>
+}
+

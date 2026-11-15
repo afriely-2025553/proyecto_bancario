@@ -1,12 +1,13 @@
 import { Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { Confirmacion } from '../../compartido/confirmacion/confirmacion';
 import { Api } from '../../core/api';
 import { fecha, mensajeError } from '../../core/formato';
 import { Cliente } from '../../core/modelos';
 
 @Component({
   selector: 'app-clientes',
-  imports: [RouterLink],
+  imports: [RouterLink, Confirmacion],
   templateUrl: './clientes.html',
 })
 export class Clientes {
@@ -15,6 +16,8 @@ export class Clientes {
   readonly cargando = signal(true);
   readonly error = signal('');
   readonly mensaje = signal('');
+  readonly pendiente = signal<Cliente | null>(null);
+  readonly procesando = signal(false);
   readonly fecha = fecha;
   private texto = '';
   private estado = '';
@@ -45,15 +48,28 @@ export class Clientes {
   }
 
   desactivar(cliente: Cliente): void {
-    if (!confirm(`¿Desactivar a ${cliente.nombres} ${cliente.apellidos}?`)) {
-      return;
-    }
+    this.mensaje.set('');
+    this.pendiente.set(cliente);
+  }
+
+  confirmarDesactivar(cliente: Cliente): void {
+    this.procesando.set(true);
     this.api.desactivarCliente(cliente.id).subscribe({
       next: () => {
-        this.mensaje.set('Cliente desactivado.');
+        this.mensaje.set(`${cliente.nombres} ${cliente.apellidos} quedó inactivo.`);
+        this.cerrarDialogo();
         this.cargar();
       },
-      error: (error: unknown) => this.mensaje.set(mensajeError(error)),
+      error: (error: unknown) => {
+        this.mensaje.set(mensajeError(error));
+        this.cerrarDialogo();
+      },
     });
   }
+
+  cerrarDialogo(): void {
+    this.pendiente.set(null);
+    this.procesando.set(false);
+  }
+
 }
