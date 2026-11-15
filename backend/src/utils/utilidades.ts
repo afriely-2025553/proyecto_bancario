@@ -22,5 +22,5 @@ export function bandera(valor: unknown): boolean {
 
 /** Valor provisional para columnas únicas mientras se conoce el id definitivo. */
 export function codigoTemporal(prefijo: string): string {
-  return `${prefijo}-${crypto.randomUUID()}`;
+    return `${prefijo}${crypto.randomUUID().replace(/-/g, '').slice(0, 12)}`;
 }
