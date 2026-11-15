@@ -12,7 +12,7 @@ import {
 } from '../models/cuentas.model';
 import { bandera, enteroPositivo } from '../utils/utilidades';
 
-const ETIQUETA_ID = 'La cuenta';
+const ETIQUETA_ID = 'El identificador de la cuenta';
 
 export async function listar(req: Request, res: Response) {
   const q = String(req.query.q ?? '').trim();
