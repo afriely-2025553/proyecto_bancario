@@ -1,7 +1,8 @@
 import { Request, Response } from 'express';
 import { ErrorApp } from '../middlewares/errores';
-import { esquemaCuentaNueva, leerCuerpo } from '../middlewares/validacion';
+import { esquemaCuentaNueva, esquemaEstadoCuenta, leerCuerpo } from '../middlewares/validacion';
 import {
+  actualizarEstadoCuenta,
   insertarCuenta,
   leerEstadoCliente,
   leerTipoCuenta,
@@ -43,6 +44,26 @@ export async function crear(req: Request, res: Response) {
   res.status(201).json(await obtenerCuenta(id));
 }
 
-export async function listarTipos(_req: Request, res: Response) {
+export async function saldo(req: Request<{ id: string }>, res: Response) {
+    const cuenta = await obtenerCuenta(enteroPositivo(req.params.id, ETIQUETA_ID));
+    res.json({
+      cuentaId: cuenta.id,
+      numeroCuenta: cuenta.numeroCuenta,
+      clienteNombre: cuenta.clienteNombre,
+      saldo: cuenta.saldo,
+      estado: cuenta.estado,
+    });
+  }
+  
+  export async function cambiarEstado(req: Request<{ id: string }>, res: Response) {
+    const id = enteroPositivo(req.params.id, ETIQUETA_ID);
+    await obtenerCuenta(id);
+    const datos = leerCuerpo(esquemaEstadoCuenta, req.body);
+    await actualizarEstadoCuenta(id, datos.estado);
+    res.json(await obtenerCuenta(id));
+  }
+  
+  export async function listarTipos(_req: Request, res: Response) {
+  
   res.json(await listarTiposCuenta());
 }
