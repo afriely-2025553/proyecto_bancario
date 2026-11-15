@@ -1,6 +1,6 @@
 import { Request, Response } from 'express';
-import { esquemaOperacion, leerCuerpo, leerMonto } from '../middlewares/validacion';
-import { operarCuenta } from '../models/operaciones.model';
+import { esquemaOperacion, esquemaTransferencia, leerCuerpo, leerMonto } from '../middlewares/validacion';
+import { operarCuenta, transferir } from '../models/operaciones.model';
 
 function registrarOperacion(tipo: 'deposito' | 'retiro', descripcionPorDefecto: string) {
   return async (req: Request, res: Response) => {
@@ -14,3 +14,17 @@ function registrarOperacion(tipo: 'deposito' | 'retiro', descripcionPorDefecto: 
 
 export const depositar = registrarOperacion('deposito', 'Depósito en ventanilla');
 export const retirar = registrarOperacion('retiro', 'Retiro en ventanilla');
+
+export async function crearTransferencia(req: Request, res: Response) {
+  const datos = leerCuerpo(esquemaTransferencia, req.body);
+  const monto = leerMonto(datos.monto);
+  const resultado = await transferir(
+    datos.cuentaOrigenId,
+    datos.cuentaDestinoId,
+    monto,
+    datos.concepto || null,
+    req.usuario!.id,
+  );
+  res.status(201).json(resultado);
+}
+
