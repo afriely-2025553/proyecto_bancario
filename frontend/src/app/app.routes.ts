@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './core/auth.guard';
 import { ClienteForm } from './paginas/cliente-form/cliente-form';
+import { Consultas } from './paginas/consultas/consultas';
 import { Clientes } from './paginas/clientes/clientes';
 import { CuentaForm } from './paginas/cuenta-form/cuenta-form';
 import { Cuentas } from './paginas/cuentas/cuentas';
@@ -26,6 +27,7 @@ export const routes: Routes = [
       { path: 'cuentas/nueva', component: CuentaForm, title: 'Abrir cuenta' },
       { path: 'operaciones', component: Operaciones, title: 'Operaciones' },
       { path: 'movimientos', component: Movimientos, title: 'Movimientos' },
+      { path: 'consultas', component: Consultas, title: 'Consultas' },
       { path: 'clientes', component: Clientes, title: 'Clientes' },      { path: '**', redirectTo: 'inicio' },
     ],
   },
