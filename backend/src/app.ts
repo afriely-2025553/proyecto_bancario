@@ -1,6 +1,7 @@
 import cors from 'cors';
 import express from 'express';
 import { consultar } from './config/db';
+import { exigirAuth } from './middlewares/auth';
 import { manejadorErrores, rutaNoEncontrada } from './middlewares/errores';
 import { routerAuth } from './routes/auth.routes';
 import { routerClientes } from './routes/clientes.routes';
@@ -18,9 +19,9 @@ export function crearApp() {
   });
 
   app.use('/api/auth', routerAuth);
-  app.use('/api/clientes', routerClientes);
-  app.use('/api/cuentas', routerCuentas);
-  app.use('/api/tipos-cuenta', routerTiposCuenta);
+  app.use('/api/clientes', exigirAuth, routerClientes);
+  app.use('/api/cuentas', exigirAuth, routerCuentas);
+  app.use('/api/tipos-cuenta', exigirAuth, routerTiposCuenta);
 
   app.use(rutaNoEncontrada);
 
