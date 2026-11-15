@@ -2,6 +2,7 @@ import cors from 'cors';
 import express from 'express';
 import { consultar } from './config/db';
 import { manejadorErrores, rutaNoEncontrada } from './middlewares/errores';
+import { routerClientes } from './routes/clientes.routes';
 
 export function crearApp() {
   const app = express();
@@ -13,7 +14,10 @@ export function crearApp() {
     res.json({ estado: 'ok', sistema: 'banco-academico' });
   });
 
+  app.use('/api/clientes', routerClientes);
+
   app.use(rutaNoEncontrada);
+
   app.use(manejadorErrores);
   return app;
 }
