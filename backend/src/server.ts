@@ -1,6 +1,7 @@
 import { crearApp } from './app';
+import { configuracion } from './config/config';
 
-const puerto = Number(process.env.PORT || 3000);
+const { puerto } = configuracion();
 
 crearApp().listen(puerto, () => {
   console.log(`API del sistema bancario en http://localhost:${puerto}`);
