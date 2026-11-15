@@ -122,5 +122,80 @@ export async function operarCuenta(
       descripcion,
     });
     return leerMovimiento(conexion, movimientoId);
+});
+}
+
+export async function transferir(
+origenId: number,
+destinoId: number,
+monto: string,
+concepto: string | null,
+usuarioId: number,
+) {
+// Regla 7: no se transfiere hacia la misma cuenta.
+if (origenId === destinoId) {
+  throw new ErrorApp(400, 'No se puede transferir hacia la misma cuenta.', 'MISMA_CUENTA');
+}
+return enTransaccion(async (conexion) => {
+  // Bloqueo en orden de id para evitar interbloqueos.
+  const primera = await bloquearCuenta(conexion, Math.min(origenId, destinoId));
+  const segunda = await bloquearCuenta(conexion, Math.max(origenId, destinoId));
+  const origen = primera.id === origenId ? primera : segunda;
+  const destino = primera.id === destinoId ? primera : segunda;
+  // Reglas 5 y 9: las dos cuentas deben existir y estar activas.
+  exigirOperable(origen);
+  exigirOperable(destino);
+  const anteriorOrigen = aCentavos(origen.saldo);
+  const anteriorDestino = aCentavos(destino.saldo);
+  const cambio = aCentavos(monto);
+  // Regla 6: la cuenta origen debe tener saldo suficiente.
+  if (anteriorOrigen < cambio) {
+    throw new ErrorApp(400, 'La cuenta origen no tiene saldo suficiente.', 'SALDO_INSUFICIENTE');
+  }
+  const posteriorOrigen = anteriorOrigen - cambio;
+  const posteriorDestino = anteriorDestino + cambio;
+  await conexion.query('UPDATE cuenta SET saldo = ? WHERE id = ?', [(posteriorOrigen / 100).toFixed(2), origen.id]);
+  await conexion.query('UPDATE cuenta SET saldo = ? WHERE id = ?', [(posteriorDestino / 100).toFixed(2), destino.id]);
+
+  const [alta] = await conexion.query<ResultSetHeader>(
+    `INSERT INTO transferencia (cuenta_origen_id, cuenta_destino_id, usuario_id, monto, referencia, concepto)
+     VALUES (?, ?, ?, ?, ?, ?)`,
+    [origen.id, destino.id, usuarioId, monto, `TMP${crypto.randomUUID().replace(/-/g, '').slice(0, 12)}`, concepto],
+  );
+  const referencia = `TRF-${String(alta.insertId).padStart(8, '0')}`;
+  await conexion.query('UPDATE transferencia SET referencia = ? WHERE id = ?', [referencia, alta.insertId]);
+
+  const salidaId = await insertarMovimiento(conexion, {
+    cuentaId: origen.id,
+    transferenciaId: alta.insertId,
+    usuarioId,
+    tipo: 'transferencia_salida',
+    monto,
+    saldoAnterior: anteriorOrigen,
+    saldoPosterior: posteriorOrigen,
+    descripcion: concepto ? `Salida: ${concepto}` : `Salida por ${referencia}`,
   });
+  const entradaId = await insertarMovimiento(conexion, {
+    cuentaId: destino.id,
+    transferenciaId: alta.insertId,
+    usuarioId,
+    tipo: 'transferencia_entrada',
+    monto,
+    saldoAnterior: anteriorDestino,
+    saldoPosterior: posteriorDestino,
+    descripcion: concepto ? `Entrada: ${concepto}` : `Entrada por ${referencia}`,
+  });
+  return {
+    transferencia: {
+      id: alta.insertId,
+      referencia,
+      cuentaOrigen: origen.numero_cuenta,
+      cuentaDestino: destino.numero_cuenta,
+      monto: dinero(monto),
+      concepto,
+    },
+    movimientoOrigen: await leerMovimiento(conexion, salidaId),
+    movimientoDestino: await leerMovimiento(conexion, entradaId),
+  };
+});
 }
