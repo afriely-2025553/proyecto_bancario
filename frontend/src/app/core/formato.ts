@@ -31,6 +31,7 @@ export function fecha(valor: string | null): string {
 }
 /** Fecha y hora de un registro ("2026-11-03 10:00:00"). */
 export function fechaHora(valor: string): string {
-  return new Date(valor.replace(' ', 'T')).toLocaleString('es-GT');
+  const [dia, hora = ''] = valor.split(' ');
+  return `${fecha(dia)} ${hora.slice(0, 5)}`;
 }
 
