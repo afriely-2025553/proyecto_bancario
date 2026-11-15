@@ -5,6 +5,7 @@ import { exigirAuth } from './middlewares/auth';
 import { manejadorErrores, rutaNoEncontrada } from './middlewares/errores';
 import { routerAuth } from './routes/auth.routes';
 import { routerClientes } from './routes/clientes.routes';
+import { routerConsultas } from './routes/consultas.routes';
 import { routerCuentas } from './routes/cuentas.routes';
 import { routerMovimientos } from './routes/movimientos.routes';
 import { routerDepositos, routerRetiros, routerTransferencias } from './routes/operaciones.routes';
@@ -28,6 +29,7 @@ export function crearApp() {
   app.use('/api/retiros', exigirAuth, routerRetiros);
   app.use('/api/transferencias', exigirAuth, routerTransferencias);
   app.use('/api/movimientos', exigirAuth, routerMovimientos);
+  app.use('/api/consultas', exigirAuth, routerConsultas);
 
   app.use(rutaNoEncontrada);
 
