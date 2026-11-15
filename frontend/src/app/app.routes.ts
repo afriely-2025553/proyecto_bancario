@@ -9,6 +9,7 @@ import { Inicio } from './paginas/inicio/inicio';
 import { Login } from './paginas/login/login';
 import { Movimientos } from './paginas/movimientos/movimientos';
 import { Operaciones } from './paginas/operaciones/operaciones';
+import { Reporte } from './paginas/reporte/reporte';
 import { Shell } from './paginas/shell/shell';
 
 export const routes: Routes = [
@@ -28,6 +29,7 @@ export const routes: Routes = [
       { path: 'operaciones', component: Operaciones, title: 'Operaciones' },
       { path: 'movimientos', component: Movimientos, title: 'Movimientos' },
       { path: 'consultas', component: Consultas, title: 'Consultas' },
+      { path: 'reporte', component: Reporte, title: 'Reporte' },
       { path: 'clientes', component: Clientes, title: 'Clientes' },      { path: '**', redirectTo: 'inicio' },
     ],
   },
