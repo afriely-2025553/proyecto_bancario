@@ -12,5 +12,7 @@ export function configuracion() {
       password: process.env.DB_PASSWORD || '',
       database: process.env.DB_NAME || 'banco_academico',
     },
+    jwtSecreto: process.env.JWT_SECRET || 'clave-solo-para-desarrollo',
+    jwtExpira: process.env.JWT_EXPIRES_IN || '8h',
   };
 }
