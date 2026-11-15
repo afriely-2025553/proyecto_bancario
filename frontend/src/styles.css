@@ -1,1 +1,140 @@
-/* You can add global styles to this file, and also import other style files */
+/* Estilos globales de la aplicación: una paleta, una escala de espacios y componentes reutilizables. */
+:root {
+    --primario: #1f4e8c;
+    --primario-oscuro: #173c6d;
+    --primario-suave: #e8eef7;
+    --barra: #14243b;
+    --texto: #1d2733;
+    --texto-suave: #5b6878;
+    --borde: #dde2e8;
+    --fondo: #f4f6f9;
+    --superficie: #ffffff;
+    --exito: #17663f;
+    --exito-suave: #e6f4ec;
+    --peligro: #b42318;
+    --peligro-suave: #fdeceb;
+    --info-suave: #eaf1fb;
+    --radio: 8px;
+    --sombra: 0 1px 3px rgba(20, 36, 59, 0.08);
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, Arial, sans-serif;
+    font-size: 15px;
+    line-height: 1.5;
+    color: var(--texto);
+    background: var(--fondo);
+  }
+  
+  * { box-sizing: border-box; }
+  body { margin: 0; }
+  h1, h2, h3, p { margin: 0; }
+  h1 { font-size: 1.5rem; font-weight: 650; }
+  h2 { font-size: 1.05rem; font-weight: 650; }
+  button, input, select { font: inherit; color: inherit; }
+  a { color: var(--primario); }
+  :focus-visible { outline: 3px solid rgba(31, 78, 140, 0.35); outline-offset: 1px; }
+  .suave { color: var(--texto-suave); }
+  .num { font-variant-numeric: tabular-nums; white-space: nowrap; text-align: right; }
+  
+  /* Estructura general */
+  .shell { min-height: 100vh; display: grid; grid-template-columns: 230px minmax(0, 1fr); }
+  .barra {
+    background: var(--barra); color: #dfe6ef; padding: 20px 14px;
+    display: flex; flex-direction: column; gap: 24px;
+    position: sticky; top: 0; height: 100vh;
+  }
+  .marca { display: flex; align-items: center; gap: 10px; padding: 0 6px; color: #fff; text-decoration: none; }
+  .marca strong { font-size: 1.02rem; }
+  .marca small { color: #a9b6c6; font-size: 0.8rem; }
+  .barra nav { display: grid; gap: 2px; }
+  .barra nav a { color: #cdd6e1; text-decoration: none; padding: 9px 12px; border-radius: 6px; }
+  .barra nav a:hover { background: rgba(255, 255, 255, 0.06); color: #fff; }
+  .barra nav a.activo { background: rgba(255, 255, 255, 0.12); color: #fff; font-weight: 600; }
+  .sesion { margin-top: auto; padding: 14px 6px 0; border-top: 1px solid rgba(255, 255, 255, 0.12); display: grid; gap: 2px; }
+  .sesion-nombre { color: #fff; font-weight: 600; }
+  .sesion-rol { color: #a9b6c6; font-size: 0.85rem; }
+  .sesion .boton { margin-top: 10px; }
+  .contenido { padding: 28px 36px 56px; min-width: 0; max-width: 1200px; width: 100%; }
+  
+  /* Encabezado de cada página */
+  .pagina-encabezado { display: flex; justify-content: space-between; align-items: flex-end; gap: 16px; margin-bottom: 20px; flex-wrap: wrap; }
+  .descripcion { color: var(--texto-suave); margin-top: 4px; }
+  .migas { font-size: 0.88rem; color: var(--texto-suave); margin-bottom: 4px; }
+  
+  /* Paneles y tarjetas */
+  .panel { background: var(--superficie); border: 1px solid var(--borde); border-radius: var(--radio); box-shadow: var(--sombra); }
+  .panel + .panel { margin-top: 16px; }
+  .rejilla > .panel + .panel { margin-top: 0; }
+  .panel + .rejilla { margin-top: 16px; }
+  .panel-cabecera { display: flex; justify-content: space-between; align-items: center; gap: 12px; padding: 14px 18px; border-bottom: 1px solid var(--borde); }
+  .panel-cuerpo { padding: 18px; }
+  .rejilla { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 14px; margin-bottom: 16px; }
+  .dato { padding: 16px 18px; }
+  .dato .etiqueta { display: block; color: var(--texto-suave); font-size: 0.85rem; }
+  .dato .valor { display: block; font-size: 1.35rem; font-weight: 650; margin-top: 2px; }
+  .lista-datos { display: grid; grid-template-columns: 180px 1fr; gap: 8px 16px; margin: 0; }
+  .lista-datos dt { color: var(--texto-suave); }
+  .lista-datos dd { margin: 0; }
+  .alerta + .lista-datos { margin-top: 14px; }
+  .lista-datos + .acciones { margin-top: 20px; }
+  
+  /* Botones */
+  .boton {
+    display: inline-flex; align-items: center; justify-content: center; gap: 6px;
+    padding: 9px 16px; border-radius: 6px; border: 1px solid var(--primario);
+    background: var(--primario); color: #fff; font-weight: 600; cursor: pointer; text-decoration: none;
+  }
+  .boton:hover { background: var(--primario-oscuro); color: #fff; }
+  .boton:disabled { opacity: 0.6; cursor: not-allowed; }
+  .boton.secundario { background: transparent; color: var(--texto); border-color: var(--borde); }
+  .boton.secundario:hover { background: var(--fondo); color: var(--texto); }
+  .boton.peligro { background: var(--peligro); border-color: var(--peligro); }
+  .boton.pequeno { padding: 5px 10px; font-size: 0.88rem; }
+  .acciones { display: flex; gap: 8px; flex-wrap: wrap; }
+  
+  /* Formularios */
+  .formulario { display: grid; gap: 16px; max-width: 640px; }
+  .fila-campos { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  .campo { display: grid; gap: 4px; }
+  .campo label { font-weight: 600; font-size: 0.92rem; }
+  .campo input, .campo select {
+    width: 100%; padding: 9px 11px; border: 1px solid #c5ccd6; border-radius: 6px; background: #fff;
+  }
+  .campo input[aria-invalid="true"], .campo select[aria-invalid="true"] { border-color: var(--peligro); }
+  .error-campo { color: var(--peligro); font-size: 0.86rem; }
+  .ayuda { color: var(--texto-suave); font-size: 0.86rem; }
+  .filtros { display: flex; gap: 10px; flex-wrap: wrap; align-items: flex-end; margin-bottom: 14px; }
+  .filtros .campo { min-width: 160px; }
+  .filtros .campo.ancho { flex: 1; min-width: 240px; }
+  
+  /* Tablas */
+  .tabla-contenedor { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; }
+  th, td { padding: 10px 14px; text-align: left; border-bottom: 1px solid var(--borde); vertical-align: middle; }
+  th { font-size: 0.82rem; text-transform: uppercase; letter-spacing: 0.03em; color: var(--texto-suave); background: #fafbfc; }
+  tr:last-child td { border-bottom: none; }
+  td .acciones { flex-wrap: nowrap; }
+  .positivo { color: var(--exito); }
+  .negativo { color: var(--peligro); }
+  
+  /* Estados, avisos y mensajes */
+  .estado { display: inline-block; padding: 2px 10px; border-radius: 999px; font-size: 0.82rem; font-weight: 600; }
+  .estado.activa { background: var(--exito-suave); color: var(--exito); }
+  .estado.inactiva { background: #eef0f3; color: var(--texto-suave); }
+  .alerta { padding: 10px 14px; border-radius: 6px; background: var(--info-suave); border: 1px solid #cddcf2; }
+  .alerta.error { background: var(--peligro-suave); border-color: #f5c6c2; color: var(--peligro); }
+  .alerta.ok { background: var(--exito-suave); border-color: #bfe3cd; color: var(--exito); }
+  .vacio { padding: 28px 18px; text-align: center; color: var(--texto-suave); }
+  
+  /* Pantalla de acceso */
+  .acceso { min-height: 100vh; display: grid; place-items: center; padding: 24px; }
+  .acceso-caja { width: 100%; max-width: 400px; display: grid; gap: 16px; }
+  .acceso-marca { text-align: center; color: var(--barra); }
+  .acceso-marca strong { display: block; font-size: 1.4rem; }
+  .ayuda-prueba { display: grid; gap: 2px; padding: 12px 14px; border: 1px dashed #c5ccd6; border-radius: 6px; font-size: 0.9rem; }
+  
+  @media (max-width: 860px) {
+    .shell { grid-template-columns: 1fr; }
+    .barra { position: static; height: auto; }
+    .contenido { padding: 20px 16px 40px; }
+    .fila-campos, .lista-datos { grid-template-columns: 1fr; }
+  }
+  
