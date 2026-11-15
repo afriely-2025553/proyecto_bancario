@@ -3,5 +3,49 @@
       <h1>Inicio</h1>
       <p class="descripcion">Sesión iniciada como {{ auth.usuario()?.nombreCompleto }}.</p>
     </div>
+    <div class="acciones">
+      <a class="boton secundario" routerLink="/clientes/nuevo">Registrar cliente</a>
+      <a class="boton" routerLink="/operaciones">Nueva operación</a>
+    </div>
   </div>
+  
+  @if (error()) {
+    <p class="alerta error">{{ error() }}</p>
+  }
+  
+  @if (reporte(); as r) {
+    <div class="rejilla">
+      <div class="panel dato"><span class="etiqueta">Clientes activos</span><span class="valor">{{ r.clientes.activos }}</span></div>
+      <div class="panel dato"><span class="etiqueta">Cuentas activas</span><span class="valor">{{ r.cuentas.activas }}</span></div>
+      <div class="panel dato"><span class="etiqueta">Saldo total en cuentas</span><span class="valor">{{ moneda(r.cuentas.saldoTotal) }}</span></div>
+      <div class="panel dato"><span class="etiqueta">Operaciones registradas</span><span class="valor">{{ r.depositos.cantidad + r.retiros.cantidad + r.transferencias.cantidad }}</span></div>
+    </div>
+  
+    <section class="panel">
+      <div class="panel-cabecera">
+        <h2>Últimas operaciones</h2>
+        <a routerLink="/movimientos">Ver movimientos</a>
+      </div>
+      <div class="tabla-contenedor">
+        <table>
+          <thead>
+            <tr><th>Fecha</th><th>Cuenta</th><th>Tipo</th><th>Descripción</th><th class="num">Monto</th></tr>
+          </thead>
+          <tbody>
+            @for (m of r.ultimasOperaciones; track m.id) {
+              <tr>
+                <td>{{ fechaHora(m.fecha) }}</td>
+                <td>{{ m.numeroCuenta }}</td>
+                <td>{{ nombreMovimiento[m.tipo] }}</td>
+                <td>{{ m.descripcion }}</td>
+                <td class="num">{{ moneda(m.monto) }}</td>
+              </tr>
+            } @empty {
+              <tr><td colspan="5" class="vacio">Todavía no hay operaciones.</td></tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    </section>
+  }
   
