@@ -2,6 +2,7 @@ import cors from 'cors';
 import express from 'express';
 import { consultar } from './config/db';
 import { manejadorErrores, rutaNoEncontrada } from './middlewares/errores';
+import { routerAuth } from './routes/auth.routes';
 import { routerClientes } from './routes/clientes.routes';
 import { routerCuentas } from './routes/cuentas.routes';
 import { routerTiposCuenta } from './routes/tipos-cuenta.routes';
@@ -16,6 +17,7 @@ export function crearApp() {
     res.json({ estado: 'ok', sistema: 'banco-academico' });
   });
 
+  app.use('/api/auth', routerAuth);
   app.use('/api/clientes', routerClientes);
   app.use('/api/cuentas', routerCuentas);
   app.use('/api/tipos-cuenta', routerTiposCuenta);
