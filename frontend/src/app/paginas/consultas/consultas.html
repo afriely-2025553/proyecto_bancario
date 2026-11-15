@@ -1,0 +1,42 @@
+<div class="pagina-encabezado">
+    <div>
+      <h1>Consultas</h1>
+    </div>
+  </div>
+  
+  <form class="filtros" (submit)="$event.preventDefault(); buscar(texto.value)">
+    <div class="campo ancho">
+      <label for="texto">Buscar</label>
+      <input id="texto" #texto />
+    </div>
+    <button class="boton" type="submit">Consultar</button>
+  </form>
+  
+  @if (error()) { <p class="alerta error">{{ error() }}</p> }
+  
+  <section class="panel">
+    <div class="panel-cabecera"><h2>Clientes</h2></div>
+    <div class="tabla-contenedor">
+      <table>
+        <tbody>
+          @for (c of resultado()?.clientes; track c.id) {
+            <tr><td>{{ c.codigo }}</td><td>{{ c.nombres }} {{ c.apellidos }}</td></tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+  
+  <section class="panel">
+    <div class="panel-cabecera"><h2>Cuentas</h2></div>
+    <div class="tabla-contenedor">
+      <table>
+        <tbody>
+          @for (c of resultado()?.cuentas; track c.id) {
+            <tr><td>{{ c.numeroCuenta }}</td><td>{{ c.clienteNombre }}</td></tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+  
