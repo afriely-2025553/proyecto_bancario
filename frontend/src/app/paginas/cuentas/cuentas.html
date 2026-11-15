@@ -64,3 +64,19 @@
     }
   </section>
   
+  @if (pendiente(); as c) {
+    @if (c.estado === 'activa') {
+      <app-confirmacion titulo="Inactivar cuenta" textoConfirmar="Inactivar" [peligro]="true"
+                        [ocupado]="procesando()" (confirmar)="confirmarCambio(c)" (cancelar)="cerrarDialogo()">
+        <p>Cuenta <strong>{{ c.numeroCuenta }}</strong> de <strong>{{ c.clienteNombre }}</strong>, saldo {{ moneda(c.saldo) }}.</p>
+        <p>Mientras esté inactiva no podrá recibir depósitos, retiros ni transferencias. El saldo se conserva.</p>
+      </app-confirmacion>
+    } @else {
+      <app-confirmacion titulo="Activar cuenta" textoConfirmar="Activar"
+                        [ocupado]="procesando()" (confirmar)="confirmarCambio(c)" (cancelar)="cerrarDialogo()">
+        <p>La cuenta <strong>{{ c.numeroCuenta }}</strong> de <strong>{{ c.clienteNombre }}</strong> volverá a operar.</p>
+      </app-confirmacion>
+    }
+  }
+  
+  

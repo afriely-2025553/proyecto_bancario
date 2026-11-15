@@ -1,12 +1,13 @@
 import { Component, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { Confirmacion } from '../../compartido/confirmacion/confirmacion';
 import { Api } from '../../core/api';
 import { fechaHora, mensajeError, moneda } from '../../core/formato';
 import { Cuenta } from '../../core/modelos';
 
 @Component({
   selector: 'app-cuentas',
-  imports: [RouterLink],
+  imports: [RouterLink, Confirmacion],
   templateUrl: './cuentas.html',
 })
 export class Cuentas {
@@ -15,6 +16,8 @@ export class Cuentas {
   readonly cargando = signal(true);
   readonly error = signal('');
   readonly mensaje = signal('');
+  readonly pendiente = signal<Cuenta | null>(null);
+  readonly procesando = signal(false);
   readonly moneda = moneda;
   readonly fechaHora = fechaHora;
   private filtro = { q: '', estado: '' };
@@ -44,13 +47,29 @@ export class Cuentas {
   }
 
   cambiarEstado(cuenta: Cuenta): void {
+    this.mensaje.set('');
+    this.pendiente.set(cuenta);
+  }
+
+  confirmarCambio(cuenta: Cuenta): void {
     const nuevo = cuenta.estado === 'activa' ? 'inactiva' : 'activa';
+    this.procesando.set(true);
     this.api.cambiarEstadoCuenta(cuenta.id, nuevo).subscribe({
       next: (actualizada) => {
         this.mensaje.set(`La cuenta ${actualizada.numeroCuenta} quedó ${actualizada.estado}.`);
+        this.cerrarDialogo();
         this.cargar();
       },
-      error: (error: unknown) => this.mensaje.set(mensajeError(error)),
+      error: (error: unknown) => {
+        this.mensaje.set(mensajeError(error));
+        this.cerrarDialogo();
+      },
     });
   }
+
+  cerrarDialogo(): void {
+    this.pendiente.set(null);
+    this.procesando.set(false);
+  }
+
 }
