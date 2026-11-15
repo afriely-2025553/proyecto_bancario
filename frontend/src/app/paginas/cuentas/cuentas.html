@@ -1,0 +1,66 @@
+<div class="pagina-encabezado">
+    <div>
+      <h1>Cuentas</h1>
+      <p class="descripcion">Saldo, estado y titular de cada cuenta.</p>
+    </div>
+    <a class="boton" routerLink="/cuentas/nueva">Abrir cuenta</a>
+  </div>
+  
+  <form class="filtros" (submit)="$event.preventDefault(); buscar(texto.value, estado.value)">
+    <div class="campo ancho">
+      <label for="buscar">Buscar</label>
+      <input id="buscar" #texto placeholder="Número de cuenta, titular o identificación" />
+    </div>
+    <div class="campo">
+      <label for="estado">Estado</label>
+      <select id="estado" #estado (change)="buscar(texto.value, estado.value)">
+        <option value="">Todas</option>
+        <option value="activa">Activas</option>
+        <option value="inactiva">Inactivas</option>
+      </select>
+    </div>
+    <button class="boton secundario" type="submit">Buscar</button>
+  </form>
+  
+  @if (mensaje()) {
+    <p class="alerta">{{ mensaje() }}</p>
+  }
+  
+  <section class="panel">
+    @if (cargando()) {
+      <p class="vacio">Cargando cuentas…</p>
+    } @else if (error()) {
+      <div class="vacio">
+        <p>{{ error() }}</p>
+        <button type="button" class="boton secundario pequeno" (click)="cargar()">Reintentar</button>
+      </div>
+    } @else {
+      <div class="tabla-contenedor">
+        <table>
+          <thead>
+            <tr><th>Número</th><th>Titular</th><th>Tipo</th><th class="num">Saldo</th><th>Estado</th><th>Apertura</th><th></th></tr>
+          </thead>
+          <tbody>
+            @for (cuenta of cuentas(); track cuenta.id) {
+              <tr>
+                <td>{{ cuenta.numeroCuenta }}</td>
+                <td>{{ cuenta.clienteNombre }}</td>
+                <td>{{ cuenta.tipoCuenta }}</td>
+                <td class="num">{{ moneda(cuenta.saldo) }}</td>
+                <td><span class="estado" [class]="cuenta.estado">{{ cuenta.estado === 'activa' ? 'Activa' : 'Inactiva' }}</span></td>
+                <td>{{ fechaHora(cuenta.fechaApertura) }}</td>
+                <td>
+                  <button type="button" class="boton secundario pequeno" (click)="cambiarEstado(cuenta)">
+                    {{ cuenta.estado === 'activa' ? 'Inactivar' : 'Activar' }}
+                  </button>
+                </td>
+              </tr>
+            } @empty {
+              <tr><td colspan="7" class="vacio">No se encontraron cuentas con ese criterio.</td></tr>
+            }
+          </tbody>
+        </table>
+      </div>
+    }
+  </section>
+  
