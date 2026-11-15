@@ -6,6 +6,7 @@ import { CuentaForm } from './paginas/cuenta-form/cuenta-form';
 import { Cuentas } from './paginas/cuentas/cuentas';
 import { Inicio } from './paginas/inicio/inicio';
 import { Login } from './paginas/login/login';
+import { Operaciones } from './paginas/operaciones/operaciones';
 import { Shell } from './paginas/shell/shell';
 
 export const routes: Routes = [
@@ -22,6 +23,7 @@ export const routes: Routes = [
       { path: 'clientes/:id', component: ClienteForm, title: 'Editar cliente' },
       { path: 'cuentas', component: Cuentas, title: 'Cuentas' },
       { path: 'cuentas/nueva', component: CuentaForm, title: 'Abrir cuenta' },
+      { path: 'operaciones', component: Operaciones, title: 'Operaciones' },
       { path: 'clientes', component: Clientes, title: 'Clientes' },      { path: '**', redirectTo: 'inicio' },
     ],
   },
