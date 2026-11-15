@@ -61,6 +61,32 @@ export const esquemaEstadoCuenta = z.object({
     estado: z.enum(['activa', 'inactiva'], { error: 'El estado debe ser «activa» o «inactiva».' }),
   });
   
+  /** Valida un monto y lo devuelve como texto con dos decimales ("15.50") */
+  export function leerMonto(valor: unknown): string {
+    if (typeof valor !== 'number' || !Number.isFinite(valor)) {
+      throw new ErrorApp(400, 'El monto debe ser un número.', 'MONTO_INVALIDO');
+    }
+    if (valor <= 0) {
+      throw new ErrorApp(400, 'El monto debe ser mayor que cero.', 'MONTO_NO_POSITIVO');
+    }
+    const centavos = Math.round(valor * 100);
+    if (Math.abs(valor * 100 - centavos) > 1e-6) {
+      throw new ErrorApp(400, 'El monto admite como máximo dos decimales.', 'MONTO_DECIMALES');
+    }
+    if (centavos > 100_000_000) {
+      throw new ErrorApp(400, 'El monto supera el límite por operación de Q 1,000,000.00.', 'MONTO_LIMITE');
+    }
+    return (centavos / 100).toFixed(2);
+  }
+  
+  const descripcionOpcional = z.string().trim().max(255, 'La descripción admite como máximo 255 caracteres.').nullish();
+  
+  export const esquemaOperacion = z.object({
+    cuentaId: z.number({ error: 'La cuenta es obligatoria.' }).int().positive('La cuenta es obligatoria.'),
+    monto: z.unknown(),
+    descripcion: descripcionOpcional,
+  });  
+  
   export const esquemaLogin = z.object({
     nombreUsuario: z.string({ error: 'El usuario es obligatorio.' }).trim().min(1, 'El usuario es obligatorio.'),
     contrasena: z.string({ error: 'La contraseña es obligatoria.' }).min(1, 'La contraseña es obligatoria.'),
