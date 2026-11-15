@@ -11,7 +11,6 @@ export function leerCuerpo<T>(esquema: z.ZodType<T>, cuerpo: unknown): T {
   return resultado.data;
 }
 
-/** Texto opcional: acepta vacío o null y lo guarda como null. */
 const textoOpcional = (max: number, etiqueta: string) =>
   z
     .string()
@@ -52,3 +51,13 @@ export const esquemaCliente = z.object({
 });
 
 export type DatosCliente = z.infer<typeof esquemaCliente>;
+
+export const esquemaCuentaNueva = z.object({
+  clienteId: z.number({ error: 'El cliente es obligatorio.' }).int().positive('El cliente es obligatorio.'),
+  tipoCuentaId: z.number({ error: 'El tipo de cuenta es obligatorio.' }).int().positive('El tipo de cuenta es obligatorio.'),
+});
+
+export const esquemaEstadoCuenta = z.object({
+  estado: z.enum(['activa', 'inactiva'], { error: 'El estado debe ser «activa» o «inactiva».' }),
+});
+
