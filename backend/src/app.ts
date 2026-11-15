@@ -9,6 +9,7 @@ import { routerConsultas } from './routes/consultas.routes';
 import { routerCuentas } from './routes/cuentas.routes';
 import { routerMovimientos } from './routes/movimientos.routes';
 import { routerDepositos, routerRetiros, routerTransferencias } from './routes/operaciones.routes';
+import { routerReportes } from './routes/reportes.routes';
 import { routerTiposCuenta } from './routes/tipos-cuenta.routes';
 
 export function crearApp() {
@@ -30,6 +31,7 @@ export function crearApp() {
   app.use('/api/transferencias', exigirAuth, routerTransferencias);
   app.use('/api/movimientos', exigirAuth, routerMovimientos);
   app.use('/api/consultas', exigirAuth, routerConsultas);
+  app.use('/api/reportes', exigirAuth, routerReportes);
 
   app.use(rutaNoEncontrada);
 
