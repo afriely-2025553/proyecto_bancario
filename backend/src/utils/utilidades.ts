@@ -20,7 +20,12 @@ export function bandera(valor: unknown): boolean {
   return valor === true || valor === 1 || valor === '1';
 }
 
-/** Valor provisional para columnas únicas mientras se conoce el id definitivo. */
+/** Convierte un monto ("15.50" o 15.5) a centavos enteros (1550) para sumar y restar sin errores. */
+export function aCentavos(valor: unknown): number {
+    return Math.round(Number(valor) * 100);
+  }
+  
+  /** Valor provisional para columnas únicas mientras se conoce el id definitivo. */  
 export function codigoTemporal(prefijo: string): string {
     return `${prefijo}${crypto.randomUUID().replace(/-/g, '').slice(0, 12)}`;
 }
