@@ -58,6 +58,11 @@ export const esquemaCuentaNueva = z.object({
 });
 
 export const esquemaEstadoCuenta = z.object({
-  estado: z.enum(['activa', 'inactiva'], { error: 'El estado debe ser «activa» o «inactiva».' }),
-});
-
+    estado: z.enum(['activa', 'inactiva'], { error: 'El estado debe ser «activa» o «inactiva».' }),
+  });
+  
+  export const esquemaLogin = z.object({
+    nombreUsuario: z.string({ error: 'El usuario es obligatorio.' }).trim().min(1, 'El usuario es obligatorio.'),
+    contrasena: z.string({ error: 'La contraseña es obligatoria.' }).min(1, 'La contraseña es obligatoria.'),
+  });
+  
