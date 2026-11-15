@@ -25,7 +25,19 @@ export function aCentavos(valor: unknown): number {
     return Math.round(Number(valor) * 100);
   }
   
-  /** Valor provisional para columnas únicas mientras se conoce el id definitivo. */  
+/** Lee un filtro de fecha opcional con formato AAAA-MM-DD. */
+export function leerFecha(valor: unknown, etiqueta: string): string | null {
+  if (valor === undefined || valor === null || valor === '') {
+    return null;
+  }
+  const texto = String(valor);
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(texto)) {
+    throw new ErrorApp(400, `${etiqueta} debe usar el formato AAAA-MM-DD.`, 'FECHA_INVALIDA');
+  }
+  return texto;
+}
+
+/** Valor provisional para columnas únicas mientras se conoce el id definitivo. */  
 export function codigoTemporal(prefijo: string): string {
     return `${prefijo}${crypto.randomUUID().replace(/-/g, '').slice(0, 12)}`;
 }
