@@ -1,0 +1,21 @@
+<div class="shell">
+    <aside class="barra">
+      <a class="marca" routerLink="/inicio">
+        <span class="marca-texto"><strong>Banco de aula</strong><small>Datos ficticios</small></span>
+      </a>
+      <nav aria-label="Menú principal">
+        @for (enlace of enlaces; track enlace.ruta) {
+          <a [routerLink]="enlace.ruta" routerLinkActive="activo" ariaCurrentWhenActive="page">{{ enlace.texto }}</a>
+        }
+      </nav>
+      <div class="sesion">
+        <span class="sesion-nombre">{{ auth.usuario()?.nombreCompleto }}</span>
+        <span class="sesion-rol">{{ auth.usuario()?.rol === 'administrador' ? 'Administrador' : 'Cajero' }}</span>
+        <button type="button" class="boton secundario pequeno" (click)="salir()">Cerrar sesión</button>
+      </div>
+    </aside>
+    <main class="contenido">
+      <router-outlet />
+    </main>
+  </div>
+  
