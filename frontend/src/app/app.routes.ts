@@ -2,6 +2,8 @@ import { Routes } from '@angular/router';
 import { authGuard } from './core/auth.guard';
 import { ClienteForm } from './paginas/cliente-form/cliente-form';
 import { Clientes } from './paginas/clientes/clientes';
+import { CuentaForm } from './paginas/cuenta-form/cuenta-form';
+import { Cuentas } from './paginas/cuentas/cuentas';
 import { Inicio } from './paginas/inicio/inicio';
 import { Login } from './paginas/login/login';
 import { Shell } from './paginas/shell/shell';
@@ -18,6 +20,8 @@ export const routes: Routes = [
       { path: 'clientes', component: Clientes, title: 'Clientes' },
       { path: 'clientes/nuevo', component: ClienteForm, title: 'Registrar cliente' },
       { path: 'clientes/:id', component: ClienteForm, title: 'Editar cliente' },
+      { path: 'cuentas', component: Cuentas, title: 'Cuentas' },
+      { path: 'cuentas/nueva', component: CuentaForm, title: 'Abrir cuenta' },
       { path: 'clientes', component: Clientes, title: 'Clientes' },      { path: '**', redirectTo: 'inicio' },
     ],
   },
