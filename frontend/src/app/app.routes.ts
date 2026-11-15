@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './core/auth.guard';
+import { Clientes } from './paginas/clientes/clientes';
 import { Inicio } from './paginas/inicio/inicio';
 import { Login } from './paginas/login/login';
 import { Shell } from './paginas/shell/shell';
@@ -13,7 +14,7 @@ export const routes: Routes = [
     children: [
       { path: '', pathMatch: 'full', redirectTo: 'inicio' },
       { path: 'inicio', component: Inicio, title: 'Inicio' },
-      { path: '**', redirectTo: 'inicio' },
+      { path: 'clientes', component: Clientes, title: 'Clientes' },      { path: 'clientes', component: Clientes, title: 'Clientes' },      { path: '**', redirectTo: 'inicio' },
     ],
   },
 ];
